@@ -21,6 +21,11 @@ public class User {
     private String username;
     private String password;
     private String roles; // Comma-separated roles
+
+    @OneToOne
+    @JoinColumn(name = "cart_id", nullable = false)
+    private Cart cart;
+
     @CreatedDate
     private LocalDateTime createdAt;
 

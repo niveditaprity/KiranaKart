@@ -23,6 +23,13 @@ public class JwtUtil {
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
+    public String getUserIdFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(secret) // Replace with your secret key
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getSubject(); // Assuming subject is user ID
+    }
 
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
