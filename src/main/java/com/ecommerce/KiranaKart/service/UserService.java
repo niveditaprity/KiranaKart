@@ -2,6 +2,7 @@ package com.ecommerce.KiranaKart.service;
 
 import com.ecommerce.KiranaKart.entity.User;
 import com.ecommerce.KiranaKart.repository.UserRepository;
+import com.ecommerce.KiranaKart.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +17,10 @@ import java.util.stream.Collectors;
 public class UserService  implements UserDetailsService {
     @Autowired
     public UserRepository  userRepository;
+
+    @Autowired
+    public JwtUtil jwtUtil;
+
     public void registerUser(String username, String password) {
         // Check if username already exists
         User existingUser = userRepository.findByUsername(username);
@@ -46,6 +51,12 @@ public class UserService  implements UserDetailsService {
          return users.stream()
                  .map(User::getUsername)
                  .collect(Collectors.toList());
+    }
+
+    public User getUserByToken(String token) {
+        String username = jwtUtil.getUserIdFromToken(token);
+        User user = userRepository.findByUsername(username);
+        return user;
     }
 
 }
