@@ -24,20 +24,22 @@ public class Cart {
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> cartItems;
 
-    private Double totalCost;
+    private Double totalCost = 0.0;
 
-    public void addItemToCart(CartItem cartItem) {
+    public void addItemToCart(CartItem cartItem,Integer quantity) {
         if(cartItems.contains(cartItem)) {
-            cartItem.setQuantity(cartItem.getQuantity()+1);
+            cartItem.setQuantity(cartItem.getQuantity() + quantity);
         }else {
             cartItems.add(cartItem);
         }
+        recalculateTotalCost();
     }
 
     public void removeItemFromCart(CartItem cartItem) {
         if(cartItems.contains(cartItem)) {
             cartItems.remove(cartItem);
         }
+        recalculateTotalCost();
     }
 
     public void removeItemByProductId(Long productId) {
@@ -51,8 +53,15 @@ public class Cart {
                 } else {
                     iterator.remove(); // Remove the item from the list
                 }
+                recalculateTotalCost();
                 return; // Exit after finding and processing the item
             }
+        }
+    }
+    private void recalculateTotalCost() {
+        totalCost = 0.0;
+        for (CartItem cartItem : cartItems) {
+            totalCost += cartItem.getProduct().getPrice() * cartItem.getQuantity();
         }
     }
 }

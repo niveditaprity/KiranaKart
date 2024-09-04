@@ -1,5 +1,6 @@
 package com.ecommerce.KiranaKart.facade;
 
+import com.ecommerce.KiranaKart.dto.CartDto;
 import com.ecommerce.KiranaKart.entity.CartItem;
 import com.ecommerce.KiranaKart.service.CartService;
 import com.ecommerce.KiranaKart.util.JwtUtil;
@@ -32,4 +33,11 @@ public class CartFacade {
     }
 
 
+    public CartDto cartData(String token) {
+        return cartService.cartData(token);
+    }
+
+    public void deleteCart(String token) {
+        cartService.deleteCart(token);
+    }
 }

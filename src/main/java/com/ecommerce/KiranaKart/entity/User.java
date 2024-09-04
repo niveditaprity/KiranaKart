@@ -23,7 +23,7 @@ public class User {
     private String roles; // Comma-separated roles
 
     @OneToOne
-    @JoinColumn(name = "cart_id", nullable = false)
+    @JoinColumn(name = "cart_id", nullable = true)
     private Cart cart;
 
     @CreatedDate

@@ -1,5 +1,6 @@
 package com.ecommerce.KiranaKart.service;
 
+import com.ecommerce.KiranaKart.dto.CartDto;
 import com.ecommerce.KiranaKart.entity.Cart;
 import com.ecommerce.KiranaKart.entity.CartItem;
 import com.ecommerce.KiranaKart.entity.Product;
@@ -11,6 +12,7 @@ import com.ecommerce.KiranaKart.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +42,7 @@ public class CartService {
             cart = new Cart();
             cart.setUser(user); // Ensure the cart is associated with the user
             user.setCart(cart);
+            cart.setCartItems(new ArrayList<>());
             cartRepository.save(cart);
         }
 
@@ -55,7 +58,7 @@ public class CartService {
 
         if (existingCartItem != null) {
             // Update quantity if the item already exists in the cart
-            existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity);
+            cart.addItemToCart(existingCartItem,quantity);
             cartItemRepository.save(existingCartItem);
         } else {
             // Create a new CartItem if it does not exist in the cart
@@ -65,6 +68,7 @@ public class CartService {
             cartItem.setCart(cart);
             cartItemRepository.save(cartItem);
             cart.getCartItems().add(cartItem); // Add the new item to the cart
+            cart.addItemToCart(cartItem,quantity);
         }
 
         // Save the updated cart
@@ -84,5 +88,28 @@ public class CartService {
         List<CartItem>cartItemList = cart.getCartItems();
         return cartItemList;
 
+    }
+
+    public CartDto cartData(String token) {
+        User user = userService.getUserByToken(token);
+        Cart cart = user.getCart();
+        CartDto cartDto = new CartDto();
+        cartDto.setId(cart.getId());
+        cartDto.setCartItems(cart.getCartItems());
+        cartDto.setTotalCost(cart.getTotalCost());
+        return cartDto;
+
+    }
+
+    public void deleteCart(String token) {
+        User user = userService.getUserByToken(token);
+        Cart cart = user.getCart();
+        if (cart != null) {// Deletes the cart from the repository
+            user.setCart(null); // Set the user's cart reference to null
+            userRepository.save(user); // Save the updated user before deleting the cart
+
+            cartRepository.delete(cart); // Now delete the cart from the repository
+
+        }
     }
 }
