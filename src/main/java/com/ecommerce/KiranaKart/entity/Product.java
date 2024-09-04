@@ -23,7 +23,7 @@ public class Product {
     private long productId; // Unique identifier for the product
     private String name; // Name of the product
     private String description; // Description of the product
-    private BigDecimal price; // Price of the product
+    private Double price; // Price of the product
     private int quantity; // Quantity in stock
     private long category_id; // Category of the product
     private String brand; // Brand of the product
